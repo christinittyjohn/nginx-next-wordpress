@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  web:
+    image: christindocker/nextjs-image
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+  wordpress:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_SITEURL', 'http://3.110.51.92:80/wp' );
+        define( 'WP_HOME', 'http://3.110.51.92:80/content' );
+    volumes:
+      - wordpress:/var/www/html
+
+  nginx:
+    image: christindocker/nginx-for-next-wordpress
+    ports:
+      - 80:80
+
+volumes:
+  wordpress:
+  db:
